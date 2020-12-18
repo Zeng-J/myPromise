@@ -97,8 +97,59 @@ class MyPromise {
             callback = () => {}
         }
         return this.then(
-            res => new MyPromise(resolve => resolve(callback())).then(() => res),
-            err => new MyPromise(resolve => resolve(callback())).then(() => { throw err })
+            res => MyPromise.resolve(callback()).then(() => res),
+            err => MyPromise.resolve(callback()).then(() => { throw err })
         )
+    }
+
+    static resolve(value) {
+        if (value instanceof MyPromise) {
+            return value
+        }
+
+        if (value instanceof Object && typeof value.then === 'function') {
+            return MyPromise.resolve().then(() => new MyPromise(value.then))
+        }
+
+        return new MyPromise(resolve => resolve(value))
+    }
+
+    static reject(value) {
+        return new MyPromise((_, reject) => reject(value))
+    }
+
+    static all(promises) {
+        // if (!Array.isArray(promises)) {
+        //     throw new TypeError('it is not a array')
+        // }
+
+        if (typeof promises[Symbol.iterator] !== 'function') {
+            throw new TypeError(promises + ' is not iterable')
+        }
+
+        return new MyPromise((resolve, reject) => {
+            promises = [...promises]
+
+            let len = promises.length
+            let total = len
+            let result = []
+
+            if (len === 0) {
+                resolve(result)
+            } else {
+                function resolver(i, value) {
+                    result[i] = value
+                    // 数组中所有Promise实例都处理完，则可以改变新MyPromise的状态
+                    if (--total === 0) {
+                        resolve(result)
+                    }
+                }
+    
+                for (let i = 0; i < len; i++) {
+                    // 只要有一个实例的状态是失败，那么新MyPromise就是失败
+                    MyPromise.resolve(promises[i]).then(value => resolver(i, value), reject)
+                }
+            }
+        })
     }
 }

@@ -101,4 +101,16 @@ class MyPromise {
             err => new MyPromise(resolve => resolve(callback())).then(() => { throw err })
         )
     }
+
+    static resolve(value) {
+        if (value instanceof MyPromise) {
+            return value
+        }
+
+        if (value instanceof Object && typeof value.then === 'function') {
+            return MyPromise.resolve().then(() => new MyPromise(value.then))
+        }
+
+        return new MyPromise(resolve => resolve(value))
+    }
 }

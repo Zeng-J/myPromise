@@ -521,7 +521,8 @@ catch(onRejected) {
 
 ## 小结
 
-至此，算是实现了一个简版的`Promise`，之后再对`Promise`其他进行封装。通过这次的学习，稍稍加深了对`Promise`的理解，如存在有误，欢迎提出。
+至此，算是实现了一个简版的`Promise`，之后再对`Promise`其他进行封装。[下一篇](./README2.md)
+通过这次的学习，稍稍加深了对`Promise`的理解，如存在有误，欢迎提出。
 
 代码链接[https://github.com/Zeng-J/myPromise](https://github.com/Zeng-J/myPromise)
 
