@@ -228,8 +228,3 @@ class MyPromise {
         })
     }
 }
-
-MyPromise.resolve(1).then(res => console.log(res))
-setTimeout(() => {
-    console.log(2)
-})
